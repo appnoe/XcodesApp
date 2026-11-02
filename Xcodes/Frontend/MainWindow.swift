@@ -9,75 +9,63 @@ struct MainWindow: View {
     @State private var selectedXcodeID: Xcode.ID?
     @State private var searchText: String = ""
     @AppStorage("lastUpdated") private var lastUpdated: Double?
-    // These two properties should be per-scene state managed by @SceneStorage property wrappers.
+    // These properties should be per-scene state managed by @SceneStorage property wrappers.
     // There's currently a bug with @SceneStorage on macOS, though, where quitting the app will discard the values, which removes a lot of its utility.
     // In the meantime, we're using @AppStorage so that persistence and state restoration works, even though it's not per-scene.
     // FB8979533 SceneStorage doesn't restore value after app is quit by user
-    @AppStorage("isShowingInfoPane") private var isShowingInfoPane = false
     @AppStorage("xcodeListCategory") private var category: XcodeListCategory = .all
     @AppStorage("xcodeListArchitecture") private var architecture: XcodeListArchitecture = .defaultForCurrentMachine
     @AppStorage("isInstalledOnly") private var isInstalledOnly = false
 
-    var body: some View {
-        NavigationSplitViewWrapper {
-            XcodeListView(selectedXcodeID: $selectedXcodeID, searchText: searchText, category: category, isInstalledOnly: isInstalledOnly, architecture: architecture)
-                .layoutPriority(1)
-                .alert(item: $appState.xcodeBeingConfirmedForUninstallation) { xcode in
-                    Alert(title: Text(String(format: localizeString("Alert.Uninstall.Title"), xcode.description)),
-                          message: Text("Alert.Uninstall.Message"),
-                          primaryButton: .destructive(Text("Uninstall"), action: { self.appState.uninstall(xcode: xcode) }),
-                          secondaryButton: .cancel(Text("Cancel")))
+    private var scope: Binding<LibraryScope> {
+        Binding(
+            get: { LibraryScope(category: category, isInstalledOnly: isInstalledOnly) },
+            set: { newScope in
+                isInstalledOnly = newScope.isInstalledOnly
+                if !category.isManaged {
+                    category = newScope.category
                 }
-                .searchable(text: $searchText, placement: .sidebar)
-                .mainToolbar(
-                    category: $category,
-                    isInstalledOnly: $isInstalledOnly,
-                    isShowingInfoPane: $isShowingInfoPane,
-                    architecture: $architecture
-                )
+            }
+        )
+    }
+
+    var body: some View {
+        NavigationSplitView {
+            SidebarView(scope: scope, architecture: architecture)
+                .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 260)
+        } content: {
+            XcodeListView(selectedXcodeID: $selectedXcodeID, searchText: searchText, category: category, isInstalledOnly: isInstalledOnly, architecture: architecture)
+                .searchable(text: $searchText)
+                .mainToolbar(architecture: $architecture)
+                .navigationSplitViewColumnWidth(min: 300, ideal: 340)
         } detail: {
             Group {
                 if let xcode = xcode {
                     InfoPane(xcode: xcode)
                 } else {
-                    UnselectedView()
-                }
-            }
-            .toolbar {
-                ToolbarItemGroup {
-                    Button(action: { appState.presentedSheet = .signIn }, label: {
-                        Label {
-                            if let authenticatedUserName {
-                                Text(verbatim: authenticatedUserName)
-                            } else {
-                                Text("Login")
-                            }
-                        } icon: {
-                            Image(systemName: "person.circle")
-                        }
-                        .labelStyle(.titleAndIcon)
-                    })
-                    .help("LoginDescription")
-                    if #available(macOS 14, *) {
-                        SettingsLink(label: {
-                            Label("Preferences", systemImage: "gearshape")
-                        })
-                        .help("PreferencesDescription")
-                    } else {
-                        Button(action: {
-                            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                        }, label: {
-                            Label("Preferences", systemImage: "gearshape")
-                        })
-                        .help("PreferencesDescription")
+                    ContentUnavailableView {
+                        Label("NoXcodeSelected", systemImage: "hammer")
+                    } description: {
+                        Text("NoXcodeSelected.Description")
                     }
                 }
             }
+            .detailToolbar(xcode: xcode)
+            .navigationSplitViewColumnWidth(min: 420, ideal: 520)
         }
-        .bottomStatusBar()
-        .padding([.top], 0)
         .navigationSubtitle(subtitleText)
-        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
+        .frame(minWidth: 900, maxWidth: .infinity, minHeight: 420, maxHeight: .infinity)
+        .confirmationDialog(
+            uninstallTitle,
+            isPresented: $appState.xcodeBeingConfirmedForUninstallation.isNotNil,
+            titleVisibility: .visible,
+            presenting: appState.xcodeBeingConfirmedForUninstallation
+        ) { xcode in
+            Button("Uninstall", role: .destructive) { appState.uninstall(xcode: xcode) }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Alert.Uninstall.Message")
+        }
         .emittingError($appState.error, recoveryHandler: { _ in })
         .sheet(item: $appState.presentedSheet) { sheet in
             switch sheet {
@@ -100,15 +88,12 @@ struct MainWindow: View {
         .focusedValue(\.selectedXcode, SelectedXcode(appState.allXcodes.first { $0.id == selectedXcodeID }))
     }
 
-    private var xcode: Xcode? {
-        appState.allXcodes.first(where: { $0.id == selectedXcodeID })
+    private var uninstallTitle: String {
+        String(format: localizeString("Alert.Uninstall.Title"), appState.xcodeBeingConfirmedForUninstallation?.description ?? "")
     }
 
-    private var authenticatedUserName: String? {
-        guard case let .authenticated(appleSession) = appState.authenticationState else {
-            return nil
-        }
-        return appleSession.user.fullName ?? appState.savedUsername
+    private var xcode: Xcode? {
+        appState.allXcodes.first(where: { $0.id == selectedXcodeID })
     }
 
     private var subtitleText: Text {
@@ -231,6 +216,42 @@ struct MainWindow: View {
             )
         }
         
+    }
+}
+
+struct SidebarView: View {
+    @EnvironmentObject var appState: AppState
+    @Binding var scope: LibraryScope
+    let architecture: XcodeListArchitecture
+    @AppStorage(PreferenceKey.allowedMajorVersions.rawValue) private var allowedMajorVersions = Int.max
+
+    var body: some View {
+        List(selection: Binding<LibraryScope?>(get: { scope }, set: { if let newValue = $0 { scope = newValue } })) {
+            Section("Xcode") {
+                ForEach(LibraryScope.allCases) { item in
+                    Label(item.title, systemImage: item.systemImage)
+                        .badge(count(for: item))
+                        .tag(item)
+                        .selectionDisabled(isDisabledByManagedCategory(item))
+                }
+            }
+        }
+        .listStyle(.sidebar)
+    }
+
+    private func count(for item: LibraryScope) -> Int {
+        appState.allXcodes.applying(XcodeListFilters(
+            versionFilter: item.category.versionFilter,
+            architectureFilters: architecture.architectureFilters,
+            allowedMajorVersions: allowedMajorVersions,
+            installedOnly: item.isInstalledOnly
+        ), item: \.listItem).count
+    }
+
+    /// A category enforced by a configuration profile can't be changed, so only that category and "Installed" stay selectable.
+    private func isDisabledByManagedCategory(_ item: LibraryScope) -> Bool {
+        guard XcodeListCategory.all.isManaged, item != .installed else { return false }
+        return item.category != scope.category
     }
 }
 

@@ -6342,6 +6342,22 @@
         }
       }
     },
+    "Build %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build %@"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "ar" : {
@@ -7385,6 +7401,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "相容性"
+          }
+        }
+      }
+    },
+    "Compatibility.Unsupported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Mac erfüllt die Systemvoraussetzungen nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac doesn't meet the system requirements."
           }
         }
       }
@@ -16426,6 +16458,22 @@
         }
       }
     },
+    "Location" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicherort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        }
+      }
+    },
     "Login" : {
       "comment" : "ToolBar",
       "localizations" : {
@@ -17920,6 +17968,22 @@
         }
       }
     },
+    "Menu.SupportXcodes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcodes unterstützen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support Xcodes…"
+          }
+        }
+      }
+    },
     "Misc" : {
       "localizations" : {
         "ar" : {
@@ -18052,6 +18116,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "雜項"
+          }
+        }
+      }
+    },
+    "MoreActions" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
           }
         }
       }
@@ -19545,6 +19625,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未選取 Xcode"
+          }
+        }
+      }
+    },
+    "NoXcodeSelected.Description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine Version in der Liste aus, um ihre Details zu sehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a version in the list to see its details."
+          }
+        }
+      }
+    },
+    "NoXcodesInScope" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Xcode-Versionen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Xcode Versions"
           }
         }
       }
@@ -21807,6 +21919,22 @@
         }
       }
     },
+    "PlatformsList.WindowTitle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installierte Plattformen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed Platforms"
+          }
+        }
+      }
+    },
     "Preferences" : {
       "localizations" : {
         "ar" : {
@@ -22896,6 +23024,22 @@
         }
       }
     },
+    "ReleaseNotes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Release Notes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Release Notes"
+          }
+        }
+      }
+    },
     "ReleaseNotes.help" : {
       "localizations" : {
         "ar" : {
@@ -23430,6 +23574,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Finder 中顯示"
+          }
+        }
+      }
+    },
+    "Scope.All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Versionen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Versions"
+          }
+        }
+      }
+    },
+    "Scope.Betas" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betas"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betas"
+          }
+        }
+      }
+    },
+    "Scope.Installed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed"
+          }
+        }
+      }
+    },
+    "Scope.Releases" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Releases"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Releases"
           }
         }
       }
@@ -25170,6 +25378,70 @@
         }
       }
     },
+    "StaleSelection.Help" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ist aktiv, aber %2$@ ist verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is active, but %2$@ is available."
+          }
+        }
+      }
+    },
+    "Status.Installed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed"
+          }
+        }
+      }
+    },
+    "Status.Installing" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird installiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing"
+          }
+        }
+      }
+    },
+    "Status.NotInstalled" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht installiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Installed"
+          }
+        }
+      }
+    },
     "StopInstallation" : {
       "localizations" : {
         "ar" : {
@@ -26221,6 +26493,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在解除安裝"
+          }
+        }
+      }
+    },
+    "Uninstall…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deinstallieren …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uninstall…"
           }
         }
       }

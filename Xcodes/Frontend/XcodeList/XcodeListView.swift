@@ -50,21 +50,37 @@ struct XcodeListView: View {
                 ForEach(visibleXcodes) { entry in
                     XcodeListViewRow(
                         xcode: entry.xcode,
-                        selected: selectedXcodeID == entry.xcode.id,
-                        appState: appState,
                         latestReleaseForSelectedPrerelease: latestReleaseForSelectedPrerelease(entry.xcode)
                     )
                         .tag(entry.xcode.id)
                 }
             }
         }
-        .listStyle(.sidebar)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            PlatformsPocket()
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-           
+        .listStyle(.inset)
+        .contextMenu(forSelectionType: Xcode.ID.self) { ids in
+            if let xcode = xcode(for: ids) {
+                XcodeActionsMenu(xcode: xcode)
+            }
+        } primaryAction: { ids in
+            // Double-clicking an installed Xcode opens it, like a document in Finder.
+            if let xcode = xcode(for: ids), xcode.installState.installed {
+                appState.open(xcode: xcode)
+            }
         }
+        .overlay {
+            if visibleXcodes.isEmpty {
+                if searchText.isEmpty {
+                    ContentUnavailableView("NoXcodesInScope", systemImage: "square.stack.3d.up.slash")
+                } else {
+                    ContentUnavailableView.search(text: searchText)
+                }
+            }
+        }
+    }
+
+    private func xcode(for ids: Set<Xcode.ID>) -> Xcode? {
+        guard let id = ids.first else { return nil }
+        return appState.allXcodes.first { $0.id == id }
     }
 }
 
@@ -186,8 +202,6 @@ private struct GroupedXcodeListContent: View {
                         ForEach(minorVersionGroup.versions) { entry in
                             XcodeListViewRow(
                                 xcode: entry.xcode,
-                                selected: selectedXcodeID == entry.xcode.id,
-                                appState: appState,
                                 latestReleaseForSelectedPrerelease: latestReleaseForSelectedPrerelease(entry.xcode)
                             )
                                 .padding(.leading, 40)
@@ -252,15 +266,13 @@ private struct XcodeVersionGroupRow: View {
 
     @ViewBuilder
     private var icon: some View {
-        if let icon = latestRelease?.icon {
-            Image(nsImage: icon)
-                .resizable()
-                .frame(width: 32, height: 32)
+        if let latestRelease {
+            XcodeAppIcon(xcode: latestRelease, size: 32)
         } else {
-            Image(latestRelease?.version.isPrerelease == true ? "xcode-beta" : "xcode")
+            Image("xcode")
                 .resizable()
                 .frame(width: 32, height: 32)
-                .opacity(0.2)
+                .opacity(0.35)
         }
     }
 
@@ -272,25 +284,25 @@ private struct XcodeVersionGroupRow: View {
                 if let latestSelectionTarget, latestSelectionTarget.id != selectedVersion.id {
                     Button(action: { appState.select(xcode: latestSelectionTarget) }) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.yellow)
+                            .foregroundStyle(.orange)
                     }
                     .buttonStyle(PlainButtonStyle())
                     .help(staleSelectedHelpText(selectedVersion: selectedVersion, latestRelease: latestSelectableRelease, selectionTarget: latestSelectionTarget))
                 } else {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.yellow)
+                        .foregroundStyle(.orange)
                         .help(staleSelectedHelpText(selectedVersion: selectedVersion, latestRelease: latestSelectableRelease, selectionTarget: latestSelectionTarget))
                 }
             case .notInstalled:
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.yellow)
+                    .foregroundStyle(.orange)
                     .help(staleSelectedHelpText(selectedVersion: selectedVersion, latestRelease: latestSelectableRelease, selectionTarget: latestSelectionTarget))
             case .installing, .uninstalling, .none:
                 EmptyView()
             }
         } else if selectedVersion?.selected == true {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(.green)
+                .foregroundStyle(.tint)
                 .help("ActiveVersionDescription")
         } else if let latestSelectionTarget {
             Button(action: { appState.select(xcode: latestSelectionTarget) }) {
@@ -325,24 +337,20 @@ private struct XcodeVersionGroupRow: View {
     private var installControl: some View {
         if let installingVersion,
            case let .installing(installationStep) = installingVersion.installState {
-            InstallationStepRowView(
-                installationStep: installationStep,
-                highlighted: false,
-                cancel: { appState.presentedAlert = .cancelInstall(xcode: installingVersion) }
-            )
+            InstallationStepRowView(installationStep: installationStep)
         } else if let latestRelease {
             switch latestRelease.installState {
             case .installed:
                 Button("Open") { appState.open(xcode: latestRelease) }
-                    .textCase(.uppercase)
-                    .buttonStyle(AppStoreButtonStyle(primary: true, highlighted: false))
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
                     .help("OpenDescription")
             case .notInstalled:
                 Button("Install") {
                     appState.checkMinVersionAndInstall(id: latestRelease.id)
                 }
-                .textCase(.uppercase)
-                .buttonStyle(AppStoreButtonStyle(primary: false, highlighted: false))
+                .buttonStyle(.bordered)
+                .controlSize(.small)
                 .help("InstallDescription")
             case .installing, .uninstalling:
                 EmptyView()
@@ -376,41 +384,6 @@ private extension Array where Element == Xcode {
                 candidate.version.isNotPrerelease &&
                 candidate.installState.installing == false
         }
-    }
-}
-
-struct PlatformsPocket: View {
-    @SwiftUI.Environment(\.openWindow) private var openWindow
-   
-    var body: some View {
-        Button(action: {
-            openWindow(id: "platforms")
-        }
-        ) {
-            if #available(macOS 26.0, *) {
-                platformsLabel
-                    .glassEffect(in: .rect(cornerRadius: 8, style: .continuous))
-            } else {
-                platformsLabel
-                .background(.quaternary.opacity(0.75))
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            }
-           
-        }
-        .buttonStyle(.plain)
-    }
-    
-    var platformsLabel: some View {
-        HStack(spacing: 5) {
-            Image(systemName: "square.3.layers.3d")
-                .font(.title3.weight(.medium))
-            Text("PlatformsDescription")
-                            Spacer()
-        }
-        .font(.body.weight(.medium))
-        .padding(.horizontal)
-        .padding(.vertical, 12)
-        .contentShape(Rectangle())
     }
 }
 

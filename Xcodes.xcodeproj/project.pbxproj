@@ -20,23 +20,13 @@
 		53CBAB2C263DCC9100410495 /* XcodesAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53CBAB2B263DCC9100410495 /* XcodesAlert.swift */; };
 		63EAA4EB259944450046AB8F /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EAA4EA259944450046AB8F /* ProgressButton.swift */; };
 		9DD4FFCB2B13EC1800C974F1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9DD4FFCA2B13EC1800C974F1 /* Localizable.xcstrings */; };
-		B0403CF02AD92D7B00137C09 /* ReleaseNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CEF2AD92D7B00137C09 /* ReleaseNotesView.swift */; };
-		B0403CF22AD934B600137C09 /* CompatibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CF12AD934B600137C09 /* CompatibilityView.swift */; };
 		B0403CF42AD9381D00137C09 /* SDKsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CF32AD9381D00137C09 /* SDKsView.swift */; };
 		B0403CF62AD9849E00137C09 /* CompilersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CF52AD9849E00137C09 /* CompilersView.swift */; };
-		B0403CF82AD991F800137C09 /* UnselectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CF72AD991F800137C09 /* UnselectedView.swift */; };
-		B0403CFA2AD9942A00137C09 /* NotInstalledStateButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CF92AD9942A00137C09 /* NotInstalledStateButtons.swift */; };
-		B0403CFC2AD9A6BF00137C09 /* InstalledStateButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CFB2AD9A6BF00137C09 /* InstalledStateButtons.swift */; };
-		B0403CFE2ADA712C00137C09 /* InfoPaneControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0403CFD2ADA712C00137C09 /* InfoPaneControls.swift */; };
-		B0C6AD042AD6E65700E64698 /* ReleaseDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6AD032AD6E65700E64698 /* ReleaseDateView.swift */; };
 		B0C6AD0B2AD9178E00E64698 /* IdenticalBuildView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6AD0A2AD9178E00E64698 /* IdenticalBuildView.swift */; };
-		B0C6AD0D2AD91D7900E64698 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6AD0C2AD91D7900E64698 /* IconView.swift */; };
-		BDBAB7452B9FF55800694B0B /* TrailingIconLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBAB7442B9FF55800694B0B /* TrailingIconLabelStyle.swift */; };
 		CA11E7BA2598476C00D2EE1C /* XcodeCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA11E7B92598476C00D2EE1C /* XcodeCommands.swift */; };
 		CA2518EC25A7FF2B00F08414 /* AppStateUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2518EB25A7FF2B00F08414 /* AppStateUpdateTests.swift */; };
 		CA2518EE25A7FF2B00F08414 /* SignInCredentialsViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2518ED25A7FF2B00F08414 /* SignInCredentialsViewTests.swift */; };
 		CA378F992466567600A58CE0 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA378F982466567600A58CE0 /* AppState.swift */; };
-		CA39711924495F0E00AFFB77 /* AppStoreButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA39711824495F0E00AFFB77 /* AppStoreButtonStyle.swift */; };
 		CA42DD7325AEB04300BC0B0C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA42DD7225AEB04300BC0B0C /* Logger.swift */; };
 		CA44901F2463AD34003D8213 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA44901E2463AD34003D8213 /* Tag.swift */; };
 		CA452BB0259FD9770072DFA4 /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA452BAF259FD9770072DFA4 /* ProgressIndicator.swift */; };
@@ -101,13 +91,10 @@
 		CAFE4AB425B7D3AF0064FE51 /* AdvancedPreferencePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFE4AB325B7D3AF0064FE51 /* AdvancedPreferencePane.swift */; };
 		CAFE4ABC25B7D54B0064FE51 /* UpdatesPreferencePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFE4ABB25B7D54B0064FE51 /* UpdatesPreferencePane.swift */; };
 		CAFFFED8259CDA5000903F81 /* XcodeListViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFFFED7259CDA5000903F81 /* XcodeListViewRow.swift */; };
-		D93F95C12E0C8C1A00238FB5 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D93F95C02E0C8C1A00238FB5 /* TagView.swift */; };
 		E689540325BE8C64000EBCEA /* DockProgress in Frameworks */ = {isa = PBXBuildFile; productRef = E689540225BE8C64000EBCEA /* DockProgress */; };
 		E81D7EA02805250100A205FC /* Collection+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81D7E9F2805250100A205FC /* Collection+.swift */; };
 		E832EAF82B0FBCF4001B570D /* RuntimeInstallationStepDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832EAF72B0FBCF4001B570D /* RuntimeInstallationStepDetailView.swift */; };
 		E83FDC442CBB649100679C6B /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = E83FDC432CBB649100679C6B /* Sparkle */; };
-		E84B7D0D2B296A8900DBDA2B /* NavigationSplitViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84B7D0C2B296A8900DBDA2B /* NavigationSplitViewWrapper.swift */; };
-		E84E4F522B323A5F003F3959 /* CornerRadiusModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E4F512B323A5F003F3959 /* CornerRadiusModifier.swift */; };
 		E84E4F542B333864003F3959 /* PlatformsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E4F532B333864003F3959 /* PlatformsListView.swift */; };
 		E84E4F572B335094003F3959 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = E84E4F562B335094003F3959 /* OrderedCollections */; };
 		E862D43B2CC8B26F00BAA376 /* SRP in Frameworks */ = {isa = PBXBuildFile; productRef = E862D43A2CC8B26F00BAA376 /* SRP */; };
@@ -124,7 +111,6 @@
 		E8C0EB1C291EF9A10081528A /* AppState+Runtimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C0EB1B291EF9A10081528A /* AppState+Runtimes.swift */; };
 		E8CBDB8927ADE32300B22292 /* unxip in Copy aria2c */ = {isa = PBXBuildFile; fileRef = E8CBDB8627ADD92000B22292 /* unxip */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E8CBDB8B27AE02FF00B22292 /* ExperiementsPreferencePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CBDB8A27AE02FF00B22292 /* ExperiementsPreferencePane.swift */; };
-		E8D0296F284B029800647641 /* BottomStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D0296E284B029800647641 /* BottomStatusBar.swift */; };
 		E8D655C0288DD04700A139C2 /* SelectedActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D655BF288DD04700A139C2 /* SelectedActionType.swift */; };
 		E8DA461125FAF7FB002E85EF /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DA461025FAF7FB002E85EF /* NotificationsView.swift */; };
 		E8E98A9025D8631800EC89A0 /* InstallationStepRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFBC3FF259AC17F00E2A3D8 /* InstallationStepRowView.swift */; };
@@ -200,23 +186,13 @@
 		63EAA4EA259944450046AB8F /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		884f01aed2f43048ab4d3323 /* NewVersionNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVersionNotificationTests.swift; sourceTree = "<group>"; };
 		9DD4FFCA2B13EC1800C974F1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		B0403CEF2AD92D7B00137C09 /* ReleaseNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseNotesView.swift; sourceTree = "<group>"; };
-		B0403CF12AD934B600137C09 /* CompatibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityView.swift; sourceTree = "<group>"; };
 		B0403CF32AD9381D00137C09 /* SDKsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SDKsView.swift; sourceTree = "<group>"; };
 		B0403CF52AD9849E00137C09 /* CompilersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilersView.swift; sourceTree = "<group>"; };
-		B0403CF72AD991F800137C09 /* UnselectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnselectedView.swift; sourceTree = "<group>"; };
-		B0403CF92AD9942A00137C09 /* NotInstalledStateButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotInstalledStateButtons.swift; sourceTree = "<group>"; };
-		B0403CFB2AD9A6BF00137C09 /* InstalledStateButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledStateButtons.swift; sourceTree = "<group>"; };
-		B0403CFD2ADA712C00137C09 /* InfoPaneControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPaneControls.swift; sourceTree = "<group>"; };
-		B0C6AD032AD6E65700E64698 /* ReleaseDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseDateView.swift; sourceTree = "<group>"; };
 		B0C6AD0A2AD9178E00E64698 /* IdenticalBuildView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdenticalBuildView.swift; sourceTree = "<group>"; };
-		B0C6AD0C2AD91D7900E64698 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
-		BDBAB7442B9FF55800694B0B /* TrailingIconLabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailingIconLabelStyle.swift; sourceTree = "<group>"; };
 		CA11E7B92598476C00D2EE1C /* XcodeCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeCommands.swift; sourceTree = "<group>"; };
 		CA2518EB25A7FF2B00F08414 /* AppStateUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateUpdateTests.swift; sourceTree = "<group>"; };
 		CA2518ED25A7FF2B00F08414 /* SignInCredentialsViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInCredentialsViewTests.swift; sourceTree = "<group>"; };
 		CA378F982466567600A58CE0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		CA39711824495F0E00AFFB77 /* AppStoreButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreButtonStyle.swift; sourceTree = "<group>"; };
 		CA42DD7225AEB04300BC0B0C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		CA44901E2463AD34003D8213 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		CA452BAF259FD9770072DFA4 /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
@@ -301,11 +277,8 @@
 		CAFE4ABB25B7D54B0064FE51 /* UpdatesPreferencePane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatesPreferencePane.swift; sourceTree = "<group>"; };
 		CAFFFED7259CDA5000903F81 /* XcodeListViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeListViewRow.swift; sourceTree = "<group>"; };
 		CAFFFEEE259CEAC400903F81 /* RingProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingProgressViewStyle.swift; sourceTree = "<group>"; };
-		D93F95C02E0C8C1A00238FB5 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		E81D7E9F2805250100A205FC /* Collection+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+.swift"; sourceTree = "<group>"; };
 		E832EAF72B0FBCF4001B570D /* RuntimeInstallationStepDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeInstallationStepDetailView.swift; sourceTree = "<group>"; };
-		E84B7D0C2B296A8900DBDA2B /* NavigationSplitViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSplitViewWrapper.swift; sourceTree = "<group>"; };
-		E84E4F512B323A5F003F3959 /* CornerRadiusModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusModifier.swift; sourceTree = "<group>"; };
 		E84E4F532B333864003F3959 /* PlatformsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformsListView.swift; sourceTree = "<group>"; };
 		E86671262B309D2F0048559A /* PlatformsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformsView.swift; sourceTree = "<group>"; };
 		E87AB3C42939B65E00D72F43 /* Hardware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hardware.swift; sourceTree = "<group>"; };
@@ -317,7 +290,6 @@
 		E8C0EB1B291EF9A10081528A /* AppState+Runtimes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppState+Runtimes.swift"; sourceTree = "<group>"; };
 		E8CBDB8627ADD92000B22292 /* unxip */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = unxip; sourceTree = "<group>"; };
 		E8CBDB8A27AE02FF00B22292 /* ExperiementsPreferencePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperiementsPreferencePane.swift; sourceTree = "<group>"; };
-		E8D0296E284B029800647641 /* BottomStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomStatusBar.swift; sourceTree = "<group>"; };
 		E8D655BF288DD04700A139C2 /* SelectedActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedActionType.swift; sourceTree = "<group>"; };
 		E8DA461025FAF7FB002E85EF /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		E8E98A9525D863D700EC89A0 /* InstallationStepDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationStepDetailView.swift; sourceTree = "<group>"; };
@@ -366,14 +338,11 @@
 		63EAA4E9259944340046AB8F /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				D93F95C02E0C8C1A00238FB5 /* TagView.swift */,
 				CAC281CC259F97FA00B8AB0B /* ObservingProgressIndicator.swift */,
 				63EAA4EA259944450046AB8F /* ProgressButton.swift */,
 				CA452BAF259FD9770072DFA4 /* ProgressIndicator.swift */,
 				536CFDD3263C9A8000026CE0 /* XcodesSheet.swift */,
 				53CBAB2B263DCC9100410495 /* XcodesAlert.swift */,
-				E84B7D0C2B296A8900DBDA2B /* NavigationSplitViewWrapper.swift */,
-				BDBAB7442B9FF55800694B0B /* TrailingIconLabelStyle.swift */,
 				CAA858BF25A2BE4E00ACF8C0 /* View+ErrorHandling.swift */,
 			);
 			path = Common;
@@ -463,14 +432,12 @@
 		CABFAA142592F73000380FEE /* XcodeList */ = {
 			isa = PBXGroup;
 			children = (
-				CA39711824495F0E00AFFB77 /* AppStoreButtonStyle.swift */,
 				CAFBC3FF259AC17F00E2A3D8 /* InstallationStepRowView.swift */,
 				CAFBDC4D2599B33D003DCC5A /* MainToolbar.swift */,
 				CA44901E2463AD34003D8213 /* Tag.swift */,
 				CAE42486259A68A300B8B246 /* XcodeListCategory.swift */,
 				CAD2E7A32449574E00113D76 /* XcodeListView.swift */,
 				CAFFFED7259CDA5000903F81 /* XcodeListViewRow.swift */,
-				E8D0296E284B029800647641 /* BottomStatusBar.swift */,
 			);
 			path = XcodeList;
 			sourceTree = "<group>";
@@ -627,22 +594,13 @@
 		E8E98A9425D863B100EC89A0 /* InfoPane */ = {
 			isa = PBXGroup;
 			children = (
-				B0403CEF2AD92D7B00137C09 /* ReleaseNotesView.swift */,
 				B0403CF32AD9381D00137C09 /* SDKsView.swift */,
 				B0403CF52AD9849E00137C09 /* CompilersView.swift */,
-				B0403CF12AD934B600137C09 /* CompatibilityView.swift */,
 				CAFBDC67259A308B003DCC5A /* InfoPane.swift */,
-				B0403CFD2ADA712C00137C09 /* InfoPaneControls.swift */,
-				B0403CF72AD991F800137C09 /* UnselectedView.swift */,
-				B0403CF92AD9942A00137C09 /* NotInstalledStateButtons.swift */,
-				B0403CFB2AD9A6BF00137C09 /* InstalledStateButtons.swift */,
 				E8E98A9525D863D700EC89A0 /* InstallationStepDetailView.swift */,
-				B0C6AD032AD6E65700E64698 /* ReleaseDateView.swift */,
 				B0C6AD0A2AD9178E00E64698 /* IdenticalBuildView.swift */,
-				B0C6AD0C2AD91D7900E64698 /* IconView.swift */,
 				E832EAF72B0FBCF4001B570D /* RuntimeInstallationStepDetailView.swift */,
 				E86671262B309D2F0048559A /* PlatformsView.swift */,
-				E84E4F512B323A5F003F3959 /* CornerRadiusModifier.swift */,
 			);
 			path = InfoPane;
 			sourceTree = "<group>";
@@ -893,9 +851,7 @@
 				CA9FF8662595130600E47BAF /* View+IsHidden.swift in Sources */,
 				CAE4248C259A68B800B8B246 /* Optional+IsNotNil.swift in Sources */,
 				3328073F2CA5E2C80036F691 /* SignInSecurityKeyPinView.swift in Sources */,
-				B0C6AD0D2AD91D7900E64698 /* IconView.swift in Sources */,
 				CA9FF9362595B44700E47BAF /* HelperClient.swift in Sources */,
-				B0C6AD042AD6E65700E64698 /* ReleaseDateView.swift in Sources */,
 				CAA8587C25A2B37900ACF8C0 /* IsTesting.swift in Sources */,
 				CABFA9CA2592EEEA00380FEE /* AppState+Update.swift in Sources */,
 				CA44901F2463AD34003D8213 /* Tag.swift in Sources */,
@@ -909,23 +865,16 @@
 				CAD2E7A42449574E00113D76 /* XcodeListView.swift in Sources */,
 				CAA1CB45255A5B60003FD669 /* SignIn2FAView.swift in Sources */,
 				CABFA9C52592EEEA00380FEE /* FileManager+.swift in Sources */,
-				B0403CFC2AD9A6BF00137C09 /* InstalledStateButtons.swift in Sources */,
 				36741BFF291E50F500A85AAE /* FileError.swift in Sources */,
-				E84E4F522B323A5F003F3959 /* CornerRadiusModifier.swift in Sources */,
-				B0403CF22AD934B600137C09 /* CompatibilityView.swift in Sources */,
-				B0403CFE2ADA712C00137C09 /* InfoPaneControls.swift in Sources */,
-				D93F95C12E0C8C1A00238FB5 /* TagView.swift in Sources */,
 				53CBAB2C263DCC9100410495 /* XcodesAlert.swift in Sources */,
 				332807412CA5EA820036F691 /* SignInSecurityKeyTouchView.swift in Sources */,
 				CA61A6E0259835580008926E /* Xcode.swift in Sources */,
 				CAE4247F259A666100B8B246 /* MainWindow.swift in Sources */,
 				1596C2923043765600178C86 /* FileOperations.swift in Sources */,
 				CA452BB0259FD9770072DFA4 /* ProgressIndicator.swift in Sources */,
-				B0403CF02AD92D7B00137C09 /* ReleaseNotesView.swift in Sources */,
 				CAFE4AB425B7D3AF0064FE51 /* AdvancedPreferencePane.swift in Sources */,
 				CA9FF84E2595079F00E47BAF /* ScrollingTextView.swift in Sources */,
 				E832EAF82B0FBCF4001B570D /* RuntimeInstallationStepDetailView.swift in Sources */,
-				BDBAB7452B9FF55800694B0B /* TrailingIconLabelStyle.swift in Sources */,
 				E8D655C0288DD04700A139C2 /* SelectedActionType.swift in Sources */,
 				36741BFD291E4FDB00A85AAE /* DownloadPreferencePane.swift in Sources */,
 				E84E4F542B333864003F3959 /* PlatformsListView.swift in Sources */,
@@ -939,7 +888,6 @@
 				E81D7EA02805250100A205FC /* Collection+.swift in Sources */,
 				E8B20CBF2A2EDEC20057D816 /* SDKs+Xcode.swift in Sources */,
 				CABFAA2D2592FBFC00380FEE /* Configure.swift in Sources */,
-				E84B7D0D2B296A8900DBDA2B /* NavigationSplitViewWrapper.swift in Sources */,
 				CA73510D257BFCEF00EA9CF8 /* NSAttributedString+.swift in Sources */,
 				CAFBDB952598FE96003DCC5A /* FocusedValues.swift in Sources */,
 				B0403CF42AD9381D00137C09 /* SDKsView.swift in Sources */,
@@ -948,13 +896,11 @@
 				CAC281CD259F97FA00B8AB0B /* ObservingProgressIndicator.swift in Sources */,
 				B0C6AD0B2AD9178E00E64698 /* IdenticalBuildView.swift in Sources */,
 				CAFBDC68259A308B003DCC5A /* InfoPane.swift in Sources */,
-				B0403CF82AD991F800137C09 /* UnselectedView.swift in Sources */,
 				E87AB3C52939B65E00D72F43 /* Hardware.swift in Sources */,
 				CAA1CB4D255A5CFD003FD669 /* SignInPhoneListView.swift in Sources */,
 				CAFBDC6C259A3098003DCC5A /* View+Conditional.swift in Sources */,
 				CABFA9CF2592EEEA00380FEE /* Process.swift in Sources */,
 				CAFFFED8259CDA5000903F81 /* XcodeListViewRow.swift in Sources */,
-				B0403CFA2AD9942A00137C09 /* NotInstalledStateButtons.swift in Sources */,
 				CAE424B4259A764700B8B246 /* AppState+Install.swift in Sources */,
 				CAE42487259A68A300B8B246 /* XcodeListCategory.swift in Sources */,
 				CAA858C425A2BE4E00ACF8C0 /* Downloader.swift in Sources */,
@@ -962,7 +908,6 @@
 				E8977EA325C11E1500835F80 /* PreferencesView.swift in Sources */,
 				CA9FF87B2595293E00E47BAF /* DataSource.swift in Sources */,
 				CABFAA432593104F00380FEE /* AboutView.swift in Sources */,
-				E8D0296F284B029800647641 /* BottomStatusBar.swift in Sources */,
 				E8C0EB1C291EF9A10081528A /* AppState+Runtimes.swift in Sources */,
 				E8E98A9025D8631800EC89A0 /* InstallationStepRowView.swift in Sources */,
 				CABFA9CC2592EEEA00380FEE /* Path+.swift in Sources */,
@@ -971,7 +916,6 @@
 				536CFDD4263C9A8000026CE0 /* XcodesSheet.swift in Sources */,
 				E89342FA25EDCC17007CF557 /* NotificationManager.swift in Sources */,
 				CA5D781E257365D6008EDE9D /* PinCodeTextView.swift in Sources */,
-				CA39711924495F0E00AFFB77 /* AppStoreButtonStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

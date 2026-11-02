@@ -5,196 +5,131 @@ import XcodesKit
 
 struct XcodeListViewRow: View {
     let xcode: Xcode
-    let selected: Bool
-    let appState: AppState
     let latestReleaseForSelectedPrerelease: Xcode?
 
-    init(xcode: Xcode, selected: Bool, appState: AppState, latestReleaseForSelectedPrerelease: Xcode? = nil) {
+    init(xcode: Xcode, latestReleaseForSelectedPrerelease: Xcode? = nil) {
         self.xcode = xcode
-        self.selected = selected
-        self.appState = appState
         self.latestReleaseForSelectedPrerelease = latestReleaseForSelectedPrerelease
     }
 
     var body: some View {
-        HStack {
-            appIconView(for: xcode)
+        HStack(spacing: 10) {
+            XcodeAppIcon(xcode: xcode, size: 32)
 
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(verbatim: "\(xcode.description) \(xcode.version.buildMetadataIdentifiersDisplay)")
-                        .font(.body)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "Xcode \(xcode.description)")
+                    .lineLimit(1)
 
-                    if !xcode.identicalBuildsForCurrentVariant.isEmpty {
-                        Image(systemName: "square.fill.on.square.fill")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .accessibility(label: Text("IdenticalBuilds"))
-                            .accessibility(value: Text(xcode.identicalBuildsForCurrentVariant.map(\.version.appleDescription).joined(separator: ", ")))
-                            .help("IdenticalBuilds.help")
-                    }
-                    
-                    if xcode.architectures?.isAppleSilicon ?? false {
-                        Image(systemName: "m4.button.horizontal")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .accessibility(label: Text("Apple Silicon"))
-                            .help("Apple Silicon")
-                    }
-                }
-
-                if case let .installed(path) = xcode.installState {
-                    Text(verbatim: path.string)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                if case let .installing(installationStep) = xcode.installState {
+                    InstallationStepRowView(installationStep: installationStep)
+                } else {
+                    Text(verbatim: subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
 
-            Spacer()
+            Spacer(minLength: 4)
 
-            selectControl(for: xcode)
-                .padding(.trailing, 16)
-            installControl(for: xcode)
-        }
-        .padding(.vertical, 4)
-        .contextMenu {
-            switch xcode.installState {
-            case .notInstalled:
-                InstallButton(xcode: xcode)
-            case .installing:
-                CancelInstallButton(xcode: xcode)
-            case .uninstalling:
-                EmptyView()
-            case let .installed(path):
-                SelectButton(xcode: xcode)
-                OpenButton(xcode: xcode)
-                RevealButton(xcode: xcode)
-                CopyPathButton(xcode: xcode)
-                CreateSymbolicLinkButton(xcode: xcode)
-                if xcode.version.isPrerelease {
-                    CreateSymbolicBetaLinkButton(xcode: xcode)
-                }
-                Divider()
-                UninstallButton(xcode: xcode)
-
-                #if DEBUG
-                    Divider()
-                    Button("Perform post-install steps") {
-                        appState.performPostInstallSteps(for: InstalledXcode(
-                            path: path,
-                            contentsAtPath: { path in Current.files.contents(atPath: path) },
-                            loadArchitectures: Current.shell.archs
-                        )!) as Void
-                    }
-                #endif
-            }
-        }
-    }
-
-    @ViewBuilder
-    func appIconView(for xcode: Xcode) -> some View {
-        if let icon = xcode.icon {
-            Image(nsImage: icon)
-                .resizable()
-                .frame(width: 32, height: 32)
-        } else {
-            Image(xcode.version.isPrerelease ? "xcode-beta" : "xcode")
-                .resizable()
-                .frame(width: 32, height: 32)
-                .opacity(0.2)
-        }
-    }
-
-    @ViewBuilder
-    private func selectControl(for xcode: Xcode) -> some View {
-        if xcode.installState.installed {
-            if let latestReleaseForSelectedPrerelease, xcode.selected {
-                switch latestReleaseForSelectedPrerelease.installState {
-                case .installed:
-                    Button(action: { appState.select(xcode: latestReleaseForSelectedPrerelease) }) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.yellow)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .help(staleSelectedHelpText)
-                case .notInstalled:
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.yellow)
-                        .help(staleSelectedHelpText)
-                case .installing, .uninstalling:
-                    EmptyView()
-                }
-            } else if xcode.selected {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-                    .help("ActiveVersionDescription")
-            } else {
-                Button(action: { appState.select(xcode: xcode) }) {
-                    Image(systemName: "checkmark.circle")
-                        .foregroundColor(.secondary)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .help("MakeActiveVersionDescription")
-            }
-        } else {
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
-    private func installControl(for xcode: Xcode) -> some View {
-        if let latestReleaseForSelectedPrerelease,
-           xcode.selected,
-           latestReleaseForSelectedPrerelease.installState == .notInstalled {
-            InstallButton(xcode: latestReleaseForSelectedPrerelease)
-                .textCase(.uppercase)
-                .buttonStyle(AppStoreButtonStyle(primary: false, highlighted: false))
-        } else {
-            installStateControl(for: xcode)
-        }
-    }
-
-    @ViewBuilder
-    private func installStateControl(for xcode: Xcode) -> some View {
-        switch xcode.installState {
-        case .installed:
-            Button("Open") { appState.open(xcode: xcode) }
-                .textCase(.uppercase)
-                .buttonStyle(AppStoreButtonStyle(primary: true, highlighted: selected))
-                .help("OpenDescription")
-        case .notInstalled:
-            InstallButton(xcode: xcode)
-                .textCase(.uppercase)
-                .buttonStyle(AppStoreButtonStyle(primary: false, highlighted: false))
-        case let .installing(installationStep):
-            InstallationStepRowView(
-                installationStep: installationStep,
-                highlighted: selected,
-                cancel: { appState.presentedAlert = .cancelInstall(xcode: xcode) }
-            )
-        case .uninstalling:
-            HStack(spacing: 4) {
-                ProgressView()
-                    .scaleEffect(0.5)
-                Text("Uninstalling")
-                    .font(.caption)
+            if !xcode.identicalBuildsForCurrentVariant.isEmpty {
+                Image(systemName: "square.on.square")
                     .foregroundStyle(.secondary)
+                    .help("IdenticalBuilds.help")
+                    .accessibilityLabel(Text("IdenticalBuilds"))
             }
+
+            activeIndicator
+        }
+        .padding(.vertical, 3)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var subtitle: String {
+        let build = xcode.version.buildMetadataIdentifiers.joined(separator: " ")
+        return [build, XcodeStatus(xcode).text].filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
+    @ViewBuilder
+    private var activeIndicator: some View {
+        if xcode.selected, let latestReleaseForSelectedPrerelease {
+            Image(systemName: "exclamationmark.circle.fill")
+                .foregroundStyle(.orange)
+                .help(staleSelectedHelpText(latestRelease: latestReleaseForSelectedPrerelease))
+                .accessibilityLabel(staleSelectedHelpText(latestRelease: latestReleaseForSelectedPrerelease))
+        } else if xcode.selected {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.tint)
+                .help("ActiveVersionDescription")
+                .accessibilityHidden(true)
         }
     }
 
-    private var staleSelectedHelpText: Text {
-        let selectedVersion = xcode.version.appleDescription
-        let latestVersion = latestReleaseForSelectedPrerelease?.version.appleDescription ?? ""
+    private func staleSelectedHelpText(latestRelease: Xcode) -> Text {
+        Text(String(format: localizeString("StaleSelection.Help"), xcode.description, latestRelease.description))
+    }
+}
 
-        switch latestReleaseForSelectedPrerelease?.installState {
-        case .installed:
-            return Text(verbatim: "\(selectedVersion) selected, \(latestVersion) available. Click to select \(latestVersion).")
-        case .notInstalled:
-            return Text(verbatim: "\(selectedVersion) selected, \(latestVersion) available. Install \(latestVersion) to select it.")
-        case .installing, .uninstalling, .none:
-            return Text("ActiveVersionDescription")
+/// The app icon of an Xcode; uninstalled versions show a dimmed placeholder.
+struct XcodeAppIcon: View {
+    let xcode: Xcode
+    let size: CGFloat
+
+    var body: some View {
+        Group {
+            if let path = xcode.installedPath {
+                Image(nsImage: xcode.icon ?? NSWorkspace.shared.icon(forFile: path.string))
+                    .resizable()
+            } else {
+                Image(xcode.version.isPrerelease ? "xcode-beta" : "xcode")
+                    .resizable()
+                    .opacity(0.35)
+            }
         }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
+    }
+}
+
+/// Human-readable install state, always expressed as text plus symbol rather than color alone.
+struct XcodeStatus {
+    let text: String
+    let systemImage: String
+    let isActive: Bool
+
+    init(_ xcode: Xcode) {
+        switch xcode.installState {
+        case .installed where xcode.selected:
+            text = localizeString("Active")
+            systemImage = "checkmark.circle.fill"
+            isActive = true
+        case .installed:
+            text = localizeString("Status.Installed")
+            systemImage = "checkmark.circle"
+            isActive = false
+        case .notInstalled:
+            text = localizeString("Status.NotInstalled")
+            systemImage = "arrow.down.circle"
+            isActive = false
+        case .installing:
+            text = localizeString("Status.Installing")
+            systemImage = "arrow.down.circle.dotted"
+            isActive = false
+        case .uninstalling:
+            text = localizeString("Uninstalling")
+            systemImage = "trash"
+            isActive = false
+        }
+    }
+}
+
+struct XcodeStatusLabel: View {
+    let xcode: Xcode
+
+    var body: some View {
+        let status = XcodeStatus(xcode)
+        Label(status.text, systemImage: status.systemImage)
+            .foregroundStyle(status.isActive ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
     }
 }
 
@@ -203,38 +138,26 @@ struct XcodeListViewRow_Previews: PreviewProvider {
         Group {
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.3.0")!, installState: .installed(Path("/Applications/Xcode-12.3.0.app")!), selected: true, icon: nil),
-                selected: false,
-                appState: AppState()
             )
 
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.2.0")!, installState: .notInstalled, selected: false, icon: nil),
-                selected: false,
-                appState: AppState()
             )
 
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.1.0")!, installState: .installing(.downloading(progress: configure(Progress(totalUnitCount: 100)) { $0.completedUnitCount = 40 })), selected: false, icon: nil),
-                selected: false,
-                appState: AppState()
             )
 
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.0.0")!, installState: .installed(Path("/Applications/Xcode-12.3.0.app")!), selected: false, icon: nil),
-                selected: false,
-                appState: AppState()
             )
 
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.0.0+1234A")!, installState: .installed(Path("/Applications/Xcode-12.3.0.app")!), selected: false, icon: nil),
-                selected: false,
-                appState: AppState()
             )
 
             XcodeListViewRow(
                 xcode: Xcode(version: Version("12.0.0+1234A")!, identicalBuilds: [XcodeID(version: Version("12.0.0-RC+1234A")!)], installState: .installed(Path("/Applications/Xcode-12.3.0.app")!), selected: false, icon: nil),
-                selected: false,
-                appState: AppState()
             )
         }
     }

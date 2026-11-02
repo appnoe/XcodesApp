@@ -33,97 +33,96 @@ struct PlatformsView: View {
             return runtime.supports(displayedVariant)
         }
         
-        VStack {
-            HStack {
-                Text("Platforms")
-                    .font(.title3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if availableVariants.count > 1 {
+        if !runtimes.isEmpty {
+            Section {
+                ForEach(runtimes, id: \.identifier) { runtime in
+                    runtimeRow(runtime: runtime)
+                }
+            } header: {
+                HStack {
+                    Text("Platforms")
                     Spacer()
-                    Picker("Architecture", selection: $selectedVariant) {
-                        ForEach(availableVariants, id: \.self) { arch in
-                            Label(variantLabel(for: arch), systemImage: arch.iconName)
-                                .tag(arch)
+                    if availableVariants.count > 1 {
+                        Picker("Architecture", selection: $selectedVariant) {
+                            ForEach(availableVariants, id: \.self) { arch in
+                                Text(variantLabel(for: arch))
+                                    .tag(arch)
+                            }
                         }
-                        .labelStyle(.trailingIcon)
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .fixedSize()
                     }
-                    .pickerStyle(.menu)
-                    .menuStyle(.button)
-                    .buttonStyle(.borderless)
-                    .fixedSize()
-                    .labelsHidden()
                 }
             }
-            
-            ForEach(runtimes, id: \.identifier) { runtime in
-                runtimeView(runtime: runtime)
-                    .frame(minWidth: 200)
-                    .padding()
-                    .background(.quinary)
-                    .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-            }
         }
-        .xcodesBackground()
-        
-
     }
 
     private func variantLabel(for variant: ArchitectureVariant) -> String {
         variant == .defaultForMachine() ? "\(variant.displayString) (\(localizeString("This Mac")))" : variant.displayString
     }
-    
+
     @ViewBuilder
-    func runtimeView(runtime: DownloadableRuntime) -> some View {
-        VStack(spacing: 10) {
-            HStack {
+    func runtimeRow(runtime: DownloadableRuntime) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 10) {
                 runtime.icon()
-                Text("\(runtime.visibleIdentifier)")
-                    .font(.headline)
-                ForEach(runtime.architectures ?? [], id: \.self) { architecture in
-                    TagView(text: architecture.displayString)
-                }
-               
-                pathIfAvailable(xcode: xcode, runtime: runtime)
-                
-                if runtime.installState == .notInstalled {
-                    // TODO: Update the downloadableRuntimes with the appropriate installState so we don't have to check path awkwardly
-                    if appState.runtimeInstallPath(xcode: xcode, runtime: runtime) != nil {
-                        EmptyView()
-                    } else {
-                        HStack {
-                            Spacer()
-                            DownloadRuntimeButton(runtime: runtime)
-                        }
+                    .frame(width: 20)
+                    .foregroundStyle(.secondary)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(verbatim: runtime.visibleIdentifier)
+                    if let architectures = runtime.architectures, !architectures.isEmpty {
+                        Text(verbatim: architectures.map(\.displayString).joined(separator: ", "))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
-					
+
                 Spacer()
+
                 Text(runtime.downloadFileSizeString)
                     .font(.subheadline)
-						  .frame(width: 70, alignment: .trailing)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+
+                runtimeControl(runtime: runtime)
+                    .frame(minWidth: 90, alignment: .trailing)
             }
-			  
-			  if case let .installing(installationStep) = runtime.installState {
-				  HStack(alignment: .top, spacing: 5){
-					  RuntimeInstallationStepDetailView(installationStep: installationStep)
-						  .fixedSize(horizontal: false, vertical: true)
-					  Spacer()
-					  CancelRuntimeInstallButton(runtime: runtime)
-				  }
-			  }
+
+            if case let .installing(installationStep) = runtime.installState {
+                HStack(alignment: .top) {
+                    RuntimeInstallationStepDetailView(installationStep: installationStep)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    CancelRuntimeInstallButton(runtime: runtime)
+                }
+            }
         }
+        .padding(.vertical, 2)
     }
-    
+
     @ViewBuilder
-    func pathIfAvailable(xcode: Xcode, runtime: DownloadableRuntime) -> some View {
+    private func runtimeControl(runtime: DownloadableRuntime) -> some View {
+        // TODO: Update the downloadableRuntimes with the appropriate installState so we don't have to check path awkwardly
         if let path = appState.runtimeInstallPath(xcode: xcode, runtime: runtime) {
-            Button(action: { appState.reveal(path: path.string) }) {
-                Image(systemName: "arrow.right.circle.fill")
+            HStack(spacing: 4) {
+                Label("Status.Installed", systemImage: "checkmark.circle.fill")
+                    .labelStyle(.titleAndIcon)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Button {
+                    appState.reveal(path: path.string)
+                } label: {
+                    Label("RevealInFinder", systemImage: "arrow.forward.circle.fill")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.borderless)
+                .help("RevealInFinder")
             }
-            .buttonStyle(PlainButtonStyle())
-            .help("RevealInFinder")
-        } else {
-            EmptyView()
+        } else if runtime.installState == .notInstalled {
+            DownloadRuntimeButton(runtime: runtime)
+                .controlSize(.small)
         }
     }
 }

@@ -10,51 +10,41 @@ import SwiftUI
 import XcodesKit
 
 struct SDKsView: View {
-    let content: String
+    let rows: [(name: String, versions: String)]
 
     var body: some View {
-        if content.isEmpty {
-            EmptyView()
-        } else {
-            VStack(alignment: .leading) {
-                Text("SDKs").font(.headline)
-                Text(content)
-                    .font(.subheadline)
-                    .textSelection(.enabled)
+        if !rows.isEmpty {
+            Section("SDKs") {
+                ForEach(rows, id: \.name) { row in
+                    LabeledContent(row.name) {
+                        Text(verbatim: row.versions)
+                            .textSelection(.enabled)
+                    }
+                }
             }
         }
     }
 
     init(sdks: SDKs?) {
         guard let sdks = sdks else {
-            self.content = ""
+            self.rows = []
             return
         }
-        let content = Self.content(from: sdks)
-        self.content = content
+        self.rows = Self.rows(from: sdks)
     }
 
-    static private func content(from sdks: SDKs) -> String {
-        let content: String = [
+    static func rows(from sdks: SDKs) -> [(name: String, versions: String)] {
+        [
             ("macOS", sdks.macOS),
             ("iOS", sdks.iOS),
             ("watchOS", sdks.watchOS),
-            ("tvOS", sdks.tvOS)
-        ].compactMap {             // remove nil compiler
-            guard $0.1 != nil,     // has version array
-                  !$0.1!.isEmpty   // has at least 1 version
-            else { return nil }
-
-            let numbers = $0.1!.compactMap { $0.number } // remove nil number
-            guard !numbers.isEmpty // has at least 1 number
-            else { return nil }
-
-            // description for each type of compilers
-            return "\($0.0): \(numbers.joined(separator: ", "))"
-        }.joined(separator: "\n")
-            .trimmingCharacters(in: .whitespaces)
-
-        return content
+            ("tvOS", sdks.tvOS),
+            ("visionOS", sdks.visionOS)
+        ].compactMap { name, versions in
+            let numbers = (versions ?? []).compactMap(\.number)
+            guard !numbers.isEmpty else { return nil }
+            return (name, numbers.joined(separator: ", "))
+        }
     }
 }
 
@@ -65,6 +55,6 @@ struct SDKsView: View {
     watchOS: .init(number: "7.3"),
     tvOS: .init(number: "14.3"))
 
-  return SDKsView(sdks: sdks)
-    .padding()
+  return Form { SDKsView(sdks: sdks) }
+    .formStyle(.grouped)
 }

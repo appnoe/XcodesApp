@@ -16,29 +16,22 @@ struct IdenticalBuildsView: View {
     private let accessibilityDescription: String
 
     var body: some View {
-        if isEmpty {
-            EmptyView()
-        } else {
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("IdenticalBuilds")
-                    Image(systemName: "square.fill.on.square.fill")
-                        .foregroundColor(.secondary)
-                        .accessibility(hidden: true)
-                        .help("IdenticalBuilds.help")
-                }
-                .font(.headline)
-
+        if !isEmpty {
+            Section {
                 ForEach(builds) { build in
-                    Text(verbatim: "• \(build.version.appleDescription)")
-                        .font(.subheadline)
+                    Text(verbatim: build.version.appleDescription)
+                        .textSelection(.enabled)
                 }
+            } header: {
+                Text("IdenticalBuilds")
+            } footer: {
+                Text("IdenticalBuilds.help")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-            .xcodesBackground()
-            .accessibilityElement()
+            .accessibilityElement(children: .combine)
             .accessibility(label: Text("IdenticalBuilds"))
             .accessibility(value: Text(accessibilityDescription))
-            .accessibility(hint: Text("IdenticalBuilds.help"))
         }
     }
 
@@ -58,8 +51,8 @@ private let previewBuilds: [XcodeID] = [
 ]
 
 #Preview("Has Some Builds") {
-  IdenticalBuildsView(builds: previewBuilds)
-    .padding()
+  Form { IdenticalBuildsView(builds: previewBuilds) }
+    .formStyle(.grouped)
 }
 
 #Preview("No Build") {

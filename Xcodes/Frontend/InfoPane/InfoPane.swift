@@ -5,60 +5,124 @@ import SwiftUI
 import Version
 
 struct InfoPane: View {
+    @EnvironmentObject var appState: AppState
     let xcode: Xcode
+
     var body: some View {
-        if #available(macOS 14.0, *) {
-            mainContent
-                .contentMargins(10, for: .scrollContent)
-        } else {
-            mainContent
-                .padding()
-        }
-    }
-    
-    private var mainContent: some View {
-        ScrollView(.vertical) {
-            HStack(alignment: .top) {
-                VStack {
-                    VStack(spacing: 5) {
-                        HStack {
-                            IconView(xcode: xcode)
-                            
-                            Text(verbatim: "Xcode \(xcode.description) \(xcode.version.buildMetadataIdentifiersDisplay)")
-                                .font(.title)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .textSelection(.enabled)
-                        }
-                        InfoPaneControls(xcode: xcode)
-                    }
-                    .xcodesBackground()
-                    
-                    PlatformsView(xcode: xcode)
-                }
-                .frame(minWidth: 380)
-                
-                VStack(alignment: .leading) {
-                    ReleaseDateView(date: xcode.releaseDate, url: xcode.releaseNotesURL)
-                    CompatibilityView(requiredMacOSVersion: xcode.requiredMacOSVersion)
-                    IdenticalBuildsView(builds: xcode.identicalBuildsForCurrentVariant)
-                    SDKandCompilers
-                }
-                .frame(width: 200)
-                
+        Form {
+            Section {
+                header
             }
-        }
-    }
-    
-    @ViewBuilder
-    var SDKandCompilers: some View {
-        VStack(alignment: .leading, spacing: 16) {
+
+            if case let .installing(installationStep) = xcode.installState {
+                Section("Status.Installing") {
+                    InstallationStepDetailView(installationStep: installationStep)
+                    HStack {
+                        Spacer()
+                        CancelInstallButton(xcode: xcode)
+                    }
+                }
+            }
+
+            Section("General") {
+                generalRows
+            }
+
+            PlatformsView(xcode: xcode)
+            IdenticalBuildsView(builds: xcode.identicalBuildsForCurrentVariant)
             SDKsView(sdks: xcode.sdks)
             CompilersView(compilers: xcode.compilers)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .formStyle(.grouped)
+    }
+
+    private var header: some View {
+        HStack(spacing: 16) {
+            XcodeAppIcon(xcode: xcode, size: 64)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(verbatim: "Xcode \(xcode.description)")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .textSelection(.enabled)
+
+                if !xcode.version.buildMetadataIdentifiers.isEmpty {
+                    Text(verbatim: xcode.version.buildMetadataIdentifiers.joined(separator: " "))
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .accessibilityLabel(Text("Build \(xcode.version.buildMetadataIdentifiers.joined(separator: " "))"))
+                }
+
+                XcodeStatusLabel(xcode: xcode)
+                    .font(.subheadline)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private var generalRows: some View {
+        if let path = xcode.installedPath {
+            LabeledContent("Location") {
+                HStack(spacing: 6) {
+                    Text(verbatim: path.string)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .textSelection(.enabled)
+                    Button {
+                        appState.reveal(path)
+                    } label: {
+                        Label("RevealInFinder", systemImage: "arrow.forward.circle.fill")
+                            .labelStyle(.iconOnly)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("RevealInFinder")
+                }
+            }
+        }
+
+        if let releaseDate = xcode.releaseDate {
+            LabeledContent("ReleaseDate") {
+                Text(releaseDate, style: .date)
+            }
+        }
+
+        if let url = xcode.releaseNotesURL {
+            LabeledContent("ReleaseNotes") {
+                Link(destination: url) {
+                    Label("ReleaseNotes.help", systemImage: "arrow.up.forward.square")
+                        .labelStyle(.titleAndIcon)
+                }
+                .contextMenu {
+                    CopyReleaseNoteButton(url: url)
+                }
+            }
+        }
+
+        if let requiredMacOSVersion = xcode.requiredMacOSVersion {
+            LabeledContent("Compatibility") {
+                let requirement = String(format: localizeString("MacOSRequirement"), requiredMacOSVersion)
+                // hasMinSupportedOS returns true when this Mac does NOT meet the requirement.
+                if appState.hasMinSupportedOS(requiredMacOSVersion: requiredMacOSVersion) {
+                    Label(requirement, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.red)
+                        .help("Compatibility.Unsupported")
+                } else {
+                    Text(requirement)
+                }
+            }
+        }
+
+        if let architectures = xcode.architectures, !architectures.isEmpty {
+            LabeledContent("Architecture") {
+                Text(architectures.isAppleSilicon ? "Apple Silicon" : "Universal")
+            }
+        }
+
+        if xcode.installState == .notInstalled, let size = xcode.downloadFileSizeString {
+            LabeledContent("DownloadSize", value: size)
+        }
     }
 }
 
@@ -76,8 +140,7 @@ private func makePreviewContent(for index: Int) -> some View {
         .environmentObject(configure(AppState()) {
             $0.allXcodes = [xcodeDict[name]!]
         })
-        .frame(width: 600, height: 400)
-        .padding()
+        .frame(width: 520, height: 600)
 }
 
 enum XcodePreviewName: String, CaseIterable, Identifiable {

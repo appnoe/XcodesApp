@@ -59,10 +59,9 @@ struct CancelInstallButton: View {
     
     var body: some View {
         Button(action: cancelInstall) {
-            Label("Cancel", systemImage: "xmark")
+            Text("StopInstallation")
         }
         .help(localizeString("StopInstallation"))
-        .buttonStyle(.plain)
     }
     
     private func cancelInstall() {
@@ -150,12 +149,11 @@ struct UninstallButton: View {
     let xcode: Xcode?
     
     var body: some View {
-        Button(action: {
+        Button(role: .destructive, action: {
             appState.xcodeBeingConfirmedForUninstallation = xcode
         }) {
-            Text("Uninstall")
+            Text("Uninstall…")
         }
-        .foregroundColor(.red)
         .help("Uninstall")
     }
 }
@@ -261,6 +259,53 @@ struct CreateSymbolicBetaLinkButton: View {
     private func createSymbolicBetaLink() {
         guard let xcode = xcode else { return }
         appState.createSymbolicLink(xcode: xcode, isBeta: true)
+    }
+}
+
+/// All actions available for an Xcode in its current state.
+/// Shared by the list's context menu and the detail toolbar's overflow menu.
+struct XcodeActionsMenu: View {
+    @EnvironmentObject var appState: AppState
+    let xcode: Xcode
+    /// The detail toolbar already shows Open and Make Active as separate items.
+    var includesPrimaryActions = true
+
+    var body: some View {
+        switch xcode.installState {
+        case .notInstalled:
+            InstallButton(xcode: xcode)
+            releaseNotesButtons
+        case .installing:
+            CancelInstallButton(xcode: xcode)
+        case .uninstalling:
+            EmptyView()
+        case .installed:
+            if includesPrimaryActions {
+                OpenButton(xcode: xcode)
+                SelectButton(xcode: xcode)
+                Divider()
+            }
+            RevealButton(xcode: xcode)
+            CopyPathButton(xcode: xcode)
+            CreateSymbolicLinkButton(xcode: xcode)
+            if xcode.version.isPrerelease {
+                CreateSymbolicBetaLinkButton(xcode: xcode)
+            }
+            releaseNotesButtons
+            Divider()
+            UninstallButton(xcode: xcode)
+        }
+    }
+
+    @ViewBuilder
+    private var releaseNotesButtons: some View {
+        if let url = xcode.releaseNotesURL {
+            Divider()
+            Link(destination: url) {
+                Text("ReleaseNotes.help")
+            }
+            CopyReleaseNoteButton(url: url)
+        }
     }
 }
 

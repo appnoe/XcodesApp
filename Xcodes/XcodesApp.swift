@@ -10,6 +10,7 @@ struct XcodesApp: App {
     @SwiftUI.Environment(\.openURL) var openURL: OpenURLAction
     @StateObject private var appState = AppState()
     @StateObject private var updater = ObservableUpdater()
+    @AppStorage(PreferenceKey.hideSupportXcodes.rawValue) private var hideSupportXcodes = false
 
     var body: some Scene {
         Window("Xcodes", id: "main") {
@@ -67,6 +68,14 @@ struct XcodesApp: App {
                     let featureRequestURL = URL(string: "https://github.com/XcodesOrg/XcodesApp/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=")!
                     openURL(featureRequestURL)
                 }
+
+                if !hideSupportXcodes {
+                    Divider()
+
+                    Button("Menu.SupportXcodes") {
+                        openURL(URL(string: "https://opencollective.com/xcodesapp")!)
+                    }
+                }
             }
         }
 #if os(macOS)
@@ -79,13 +88,16 @@ struct XcodesApp: App {
           })
       }
         
-        Window("Platforms", id: "platforms") {
+        // Listed in the Window menu, like Xcode's "Devices and Simulators".
+        Window("PlatformsList.WindowTitle", id: "platforms") {
             PlatformsListView()
                 .environmentObject(appState)
                 .alert(item: $appState.presentedPreferenceAlert, content: { presentedAlert in
                     alert(for: presentedAlert)
                 })
         }
+        .keyboardShortcut("p", modifiers: [.command, .shift])
+        .defaultSize(width: 480, height: 520)
 #endif
     }
     

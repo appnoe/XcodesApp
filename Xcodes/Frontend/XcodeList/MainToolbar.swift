@@ -1,10 +1,9 @@
 import SwiftUI
+import XcodesKit
 
+/// Toolbar of the version list column: refreshing and filtering the list.
 struct MainToolbarModifier: ViewModifier {
     @EnvironmentObject var appState: AppState
-    @Binding var category: XcodeListCategory
-    @Binding var isInstalledOnly: Bool
-    @Binding var isShowingInfoPane: Bool
     @Binding var architectures: XcodeListArchitecture
 
     func body(content: Content) -> some View {
@@ -20,68 +19,137 @@ struct MainToolbarModifier: ViewModifier {
             ) {
                 Label("Refresh", systemImage: "arrow.clockwise")
             }
-            .keyboardShortcut(KeyEquivalent("r"))
             .help("RefreshDescription")
-            
-            Spacer()
-            
-            let isFiltering = isInstalledOnly || category != .all || !architectures.isCurrentMachineDefault
-            Menu("Filter", systemImage: "line.horizontal.3.decrease.circle") {
-                Section {
-                    Toggle("Installed Only", systemImage: "arrow.down.app", isOn: $isInstalledOnly)            .labelStyle(.titleAndIcon)
-                }
-                .help("FilterInstalledDescription")
-                
-                Section {
-                    Picker("Category", selection: $category) {
-                        Label("All", systemImage: "line.horizontal.3.decrease.circle")
-                            .tag(XcodeListCategory.all)
-                        Label("ReleaseOnly", systemImage: "line.horizontal.3.decrease.circle.fill")
-                            .tag(XcodeListCategory.release)
-                        Label("BetaOnly", systemImage: "line.horizontal.3.decrease.circle.fill")
-                            .tag(XcodeListCategory.beta)
+
+            Menu {
+                Picker("Architecture", selection: $architectures) {
+                    ForEach(XcodeListArchitecture.allCases) { architecture in
+                        Text(architecture.menuDescription)
+                            .tag(architecture)
                     }
                 }
-                .help("FilterAvailableDescription")
-                .disabled(category.isManaged)
-                
-                Section {
-                    Picker("Architecture", selection: $architectures) {
-                        Label(architecturesLabel(for: .universal), systemImage: "cpu.fill")
-                            .tag(XcodeListArchitecture.universal)
-                        Label(architecturesLabel(for: .appleSilicon), systemImage: "m4.button.horizontal")
-                            .foregroundColor(.accentColor)
-                            .tag(XcodeListArchitecture.appleSilicon)
-                    }
-                    .help("FilterArchitecturesDescription")
-                    .disabled(architectures.isManaged)
-                }
-                .labelStyle(.titleAndIcon)
+                .pickerStyle(.inline)
+                .disabled(architectures.isManaged)
+            } label: {
+                Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
             }
-            .pickerStyle(.inline)
-            .symbolVariant(isFiltering ? .fill : .none)
+            .symbolVariant(architectures.isCurrentMachineDefault ? .none : .fill)
+            .help("FilterArchitecturesDescription")
+        }
+    }
+}
+
+/// Toolbar of the detail column: the most common actions for the selected Xcode, plus the account.
+struct DetailToolbarModifier: ViewModifier {
+    @EnvironmentObject var appState: AppState
+    let xcode: Xcode?
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    if let xcode {
+                        actions(for: xcode)
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    accountButton
+                }
+            }
+    }
+
+    @ViewBuilder
+    private func actions(for xcode: Xcode) -> some View {
+        switch xcode.installState {
+        case .notInstalled:
+            Button {
+                appState.checkMinVersionAndInstall(id: xcode.id)
+            } label: {
+                Label("Install", systemImage: "arrow.down.circle")
+            }
+            .help("InstallDescription")
+        case .installing:
+            Button {
+                appState.presentedAlert = .cancelInstall(xcode: xcode)
+            } label: {
+                Label("StopInstallation", systemImage: "xmark.circle")
+            }
+            .help("StopInstallation")
+        case .installed:
+            openButton(for: xcode)
+
+            Button {
+                appState.select(xcode: xcode)
+            } label: {
+                Label("MakeActive", systemImage: "checkmark.circle")
+            }
+            .disabled(xcode.selected)
+            .help("MakeActiveVersionDescription")
+
+            Menu {
+                XcodeActionsMenu(xcode: xcode, includesPrimaryActions: false)
+            } label: {
+                Label("MoreActions", systemImage: "ellipsis.circle")
+            }
+            .help("MoreActions")
+        case .uninstalling:
+            EmptyView()
         }
     }
 
-    private func architecturesLabel(for architecture: XcodeListArchitecture) -> String {
-        architecture.menuDescription
+    @ViewBuilder
+    private func openButton(for xcode: Xcode) -> some View {
+        if appState.showOpenInRosettaOption && HostHardware.isAppleSilicon() {
+            Menu {
+                Button("Open") { appState.open(xcode: xcode) }
+                Button("Open In Rosetta") { appState.open(xcode: xcode, openInRosetta: true) }
+            } label: {
+                Label("Open", systemImage: "hammer")
+            } primaryAction: {
+                appState.open(xcode: xcode)
+            }
+            .help("OpenDescription")
+        } else {
+            Button {
+                appState.open(xcode: xcode)
+            } label: {
+                Label("Open", systemImage: "hammer")
+            }
+            .help("OpenDescription")
+        }
+    }
+
+    private var accountButton: some View {
+        Button {
+            appState.presentedSheet = .signIn
+        } label: {
+            Label {
+                if let authenticatedUserName {
+                    Text(verbatim: authenticatedUserName)
+                } else {
+                    Text("Login")
+                }
+            } icon: {
+                Image(systemName: "person.crop.circle")
+            }
+        }
+        .help("LoginDescription")
+    }
+
+    private var authenticatedUserName: String? {
+        guard case let .authenticated(appleSession) = appState.authenticationState else {
+            return nil
+        }
+        return appleSession.user.fullName ?? appState.savedUsername
     }
 }
 
 extension View {
-    func mainToolbar(
-        category: Binding<XcodeListCategory>,
-        isInstalledOnly: Binding<Bool>,
-        isShowingInfoPane: Binding<Bool>,
-        architecture: Binding<XcodeListArchitecture>
-    ) -> some View {
-        modifier(
-            MainToolbarModifier(
-                category: category,
-                isInstalledOnly: isInstalledOnly,
-                isShowingInfoPane: isShowingInfoPane,
-                architectures: architecture
-            )
-        )
+    func mainToolbar(architecture: Binding<XcodeListArchitecture>) -> some View {
+        modifier(MainToolbarModifier(architectures: architecture))
+    }
+
+    func detailToolbar(xcode: Xcode?) -> some View {
+        modifier(DetailToolbarModifier(xcode: xcode))
     }
 }
